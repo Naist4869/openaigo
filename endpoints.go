@@ -115,7 +115,7 @@ func (client *Client) RetrieveFileContent(ctx context.Context, id string) (res i
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", client.APIKey))
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", client.apiKey))
 	if ctx != nil {
 		req = req.WithContext(ctx)
 	}

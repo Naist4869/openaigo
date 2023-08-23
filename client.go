@@ -17,9 +17,9 @@ const DefaultOpenAIAPIURL = "https://api.openai.com/v1"
 // Client for api.openai.com API endpoints.
 type Client struct {
 
-	// APIKey issued by OpenAI console.
+	//  issued by OpenAI console.
 	// See https://beta.openai.com/account/api-keys
-	APIKey string
+	apiKey string
 
 	// BaseURL of API including the version.
 	// e.g., https://api.openai.com/v1
@@ -41,9 +41,10 @@ var (
 	StreamDataDONE    = []byte("[DONE]")
 )
 
-func NewClient(apikey string) *Client {
+func NewClient(baseURL, apikey string) *Client {
 	return &Client{
-		APIKey: apikey,
+		apiKey:  apikey,
+		BaseURL: baseURL,
 		// Organization: org-GXjGDRs5UuJ4CvQ2u9d5uy0k
 		// BaseURL: DefaultOpenAIAPIURL,
 		// HTTPClient: http.DefaultClient,
@@ -79,7 +80,7 @@ func (client *Client) build(ctx context.Context, method, p string, body interfac
 		return nil, fmt.Errorf("failed to init request: %v", err)
 	}
 	req.Header.Add("Content-Type", contenttype)
-	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", client.APIKey))
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", client.apiKey))
 	if client.Organization != "" {
 		req.Header.Add("OpenAI-Organization", client.Organization)
 	}
@@ -129,6 +130,7 @@ func execute[T any](client *Client, req *http.Request, response *T, cb callback[
 		return nil
 	}
 	defer httpres.Body.Close()
+
 	if err := json.NewDecoder(httpres.Body).Decode(response); err != nil {
 		return fmt.Errorf("failed to decode response to %T: %v", response, err)
 	}

@@ -51,8 +51,10 @@ const (
 	// }}}
 
 	// {{{ https://platform.openai.com/docs/models/gpt-4
-	GPT4          = "gpt-4"
-	GPT4_0314     = "gpt-4-0314"
+	GPT4         = "gpt-4"
+	GPT4_0314    = "gpt-4-0314"
+	DefaultModel = "gpt-4-0613"
+
 	GPT4_0613     = "gpt-4-0613"
 	GPT4_32K      = "gpt-4-32k"
 	GPT4_32K_0314 = "gpt-4-32k-0314"

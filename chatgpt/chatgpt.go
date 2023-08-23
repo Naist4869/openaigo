@@ -100,7 +100,7 @@ type Message struct {
 func New(apikey, model string) *Client {
 	return &Client{
 		Client: openaigo.Client{
-			APIKey: apikey,
+			apiKey: apikey,
 		},
 		Model:                   model,
 		MaxFunctionCallHandling: DefaultMaxAutoFunctionCall,

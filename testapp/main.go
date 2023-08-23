@@ -122,7 +122,7 @@ var (
 					}
 				}
 				request := openaigo.ChatCompletionRequestBody{
-					Model:          openaigo.GPT3_5Turbo_0613,
+					Model:          openaigo.DefaultModel,
 					StreamCallback: calback,
 					Messages: []openaigo.Message{
 						{
@@ -162,7 +162,7 @@ var (
 				}
 				client := openaigo.NewClient(OPENAI_API_KEY)
 				request := openaigo.ChatRequest{
-					Model:     openaigo.GPT3_5Turbo_0613,
+					Model:     openaigo.DefaultModel,
 					Messages:  conversation,
 					Functions: funcs,
 				}

@@ -19,7 +19,7 @@ type Param struct {
 	Type        string `json:"type,omitempty"`
 	Description string `json:"description,omitempty"`
 	Required    bool   `json:"-"`
-	// Enum        []any  `json:"enum,omitempty"`
+	Enum        []any  `json:"enum,omitempty"`
 }
 
 func (funcs Funcs) MarshalJSON() ([]byte, error) {
