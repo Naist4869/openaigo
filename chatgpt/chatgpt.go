@@ -11,7 +11,7 @@ import (
 const DefaultMaxAutoFunctionCall = 8
 
 type Client struct {
-	openaigo.Client `json:"-"`
+	*openaigo.Client `json:"-"`
 
 	// Model: ID of the model to use.
 	// Currently, only gpt-3.5-turbo and gpt-3.5-turbo-0301 are supported.
@@ -94,14 +94,13 @@ type Client struct {
 
 type Message struct {
 	openaigo.Message
-	autocalled bool
+	Autocalled bool
 }
 
 func New(apikey, model string) *Client {
+	client := openaigo.NewClient("", apikey)
 	return &Client{
-		Client: openaigo.Client{
-			apiKey: apikey,
-		},
+		Client:                  client,
 		Model:                   model,
 		MaxFunctionCallHandling: DefaultMaxAutoFunctionCall,
 	}
@@ -133,7 +132,7 @@ func (c *Client) Chat(ctx context.Context, conv []Message) ([]Message, error) {
 		if c.shouldCallFunction(conv) {
 			call := res.Choices[0].Message.FunctionCall
 			m := Func(call.Name(), c.Functions.Call(call))
-			m.autocalled = true
+			m.Autocalled = true
 			conv, err = c.Chat(ctx, append(conv, m))
 		}
 	}
@@ -141,7 +140,7 @@ func (c *Client) Chat(ctx context.Context, conv []Message) ([]Message, error) {
 	// Now clean up the auto-called flags
 	// so that the caller can reuse this slice to restart chat.
 	for i := range conv {
-		conv[i].autocalled = false
+		conv[i].Autocalled = false
 	}
 
 	return conv, err
@@ -154,7 +153,7 @@ func (c *Client) shouldCallFunction(conv []Message) bool {
 	}
 	cnt := 0
 	for _, m := range conv {
-		if m.autocalled {
+		if m.Autocalled {
 			cnt++
 		}
 	}

@@ -14,7 +14,7 @@ type Invocation interface {
 func (funcs Funcs) Call(invocation Invocation) string {
 	b, err := json.Marshal(funcs.Invoke(invocation))
 	if err != nil {
-		return err.Error()
+		return "Your function call could not be parsed. Please use ONLY the `execute_code` function, which takes one parameters: `code`. Your response should be formatted as a JSON."
 	}
 	return string(b)
 }

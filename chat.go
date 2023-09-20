@@ -1,6 +1,9 @@
 package openaigo
 
-import "encoding/json"
+import (
+	"encoding/json"
+	jsoniter "github.com/json-iterator/go"
+)
 
 // ChatCompletionRequestBody:
 // https://platform.openai.com/docs/guides/chat/chat-completions-beta
@@ -152,7 +155,37 @@ func (fc *FunctionCall) Name() string {
 
 func (fc *FunctionCall) Args() map[string]any {
 	var args map[string]any
-	json.Unmarshal([]byte(fc.ArgumentsRaw), &args)
+	if err := json.Unmarshal([]byte(fc.ArgumentsRaw), &args); err != nil {
+		// todo 需要改
+		if fc.NameRaw == "execute_code" {
+			get := jsoniter.Get([]byte(fc.ArgumentsRaw), "code")
+			if err = get.LastError(); err != nil {
+				get = jsoniter.Get(append([]byte(fc.ArgumentsRaw), '"'), "code")
+				if err = get.LastError(); err != nil {
+					return map[string]any{
+						"code": fc.ArgumentsRaw,
+					}
+				}
+				return map[string]any{
+					"code": get,
+				}
+			}
+		}
+		if fc.NameRaw == "upload_output_file" {
+			get := jsoniter.Get([]byte(fc.ArgumentsRaw), "file_name")
+			if err = get.LastError(); err != nil {
+				get = jsoniter.Get(append([]byte(fc.ArgumentsRaw), '"'), "file_name")
+				if err = get.LastError(); err != nil {
+					return map[string]any{
+						"file_name": fc.ArgumentsRaw,
+					}
+				}
+				return map[string]any{
+					"file_name": get,
+				}
+			}
+		}
+	}
 	return args
 }
 
