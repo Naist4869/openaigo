@@ -8,15 +8,24 @@ import (
 )
 
 const (
-	Size256  string = "256x256"
-	Size512  string = "512x512"
+	Size256 string = "256x256"
+	Size512 string = "512x512"
+
+	// both dall-e-3 and dall-e-2.
 	Size1024 string = "1024x1024"
+
+	// dall-e-3 supported only.
+	Size1792x1024 = "1792x1024"
+	Size1024x1792 = "1024x1792"
 )
 
 type ImageGenerationRequestBody struct {
+	Model          string `json:"model,omitempty"`
 	Prompt         string `json:"prompt"`
 	N              int    `json:"n,omitempty"`
+	Quality        string `json:"quality,omitempty"` // dall-e-3 supported only. Defaults to standard
 	Size           string `json:"size,omitempty"`
+	Style          string `json:"style,omitempty"` // The style of the generated images. Must be one of vivid or natural. Vivid causes the model to lean towards generating hyper-real and dramatic images. Natural causes the model to produce more natural, less hyper-real looking images. This param is only supported for dall-e-3.
 	ResponseFormat string `json:"response_format,omitempty"`
 	User           string `json:"user,omitempty"`
 }
